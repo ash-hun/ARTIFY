@@ -1,0 +1,30 @@
+name: Sync Fork on Issue Opened
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  sync_fork:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout original repository's dev branch
+        uses: actions/checkout@v3
+        with:
+          ref: dev
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add fork remote
+        run: |
+          git remote add fork https://github.com/ash-hun/ARTIFY.git
+
+      - name: Push changes to fork's dev branch
+        run: |
+          git push fork dev --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.FORK_GITHUB_TOKEN }}
