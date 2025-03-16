@@ -1,0 +1,76 @@
+name: Sync Fork Main on Issue Opened
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  sync_fork:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check variable and decide
+        id: check
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          echo "Checking issue title: $ISSUE_TITLE"
+          
+          if echo "$ISSUE_TITLE" | grep -q "\[BE_p\]"; then
+            echo "naming_check=true" >> $GITHUB_ENV
+            echo "user_name=ash-hun" >> $GITHUB_ENV
+            echo "user_email=jhchoi09@naver.com" >> $GITHUB_ENV
+            echo "user_token=${{ secrets.FORK_GITHUB_TOKEN_JH }}" >> $GITHUB_ENV
+            echo "true"
+          elif echo "$ISSUE_TITLE" | grep -q "\[BE\]"; then
+            echo "naming_check=true" >> $GITHUB_ENV
+            echo "user_name=HS980924" >> $GITHUB_ENV
+            echo "user_email=choihs980924@gmail.com" >> $GITHUB_ENV
+            echo "user_token=${{ secrets.FORK_GITHUB_TOKEN_HS }}" >> $GITHUB_ENV
+            echo "true"
+          elif echo "$ISSUE_TITLE" | grep -q "\[FE\]"; then
+            echo "naming_check=true" >> $GITHUB_ENV
+            echo "user_name=Dejong1706" >> $GITHUB_ENV
+            echo "user_email=ppk0320@gmail.com" >> $GITHUB_ENV
+            echo "user_token=${{ secrets.FORK_GITHUB_TOKEN_BG }}" >> $GITHUB_ENV
+            echo "true"
+          else
+            echo "naming_check=false" >> $GITHUB_ENV
+            echo "false"
+          fi
+
+      - name: Checkout original repository's main branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Configure Git
+        if: env.naming_check == 'true'
+        run: |
+          git config user.name env.user_name
+          git config user.email env.user_email
+
+      - name: Add fork remote with PAT
+        if: env.naming_check == 'true'
+        run: |
+          git remote add local https://x-access-token:${{env.user_token}}@github.com/${{env.user_name}}/infra_test.git
+      
+      - name: Pull latest changes from origin
+        if: env.naming_check == 'true'
+        run: |
+          git pull --rebase https://${{env.user_token}}@github.com/${{env.user_name}}/infra_test.git main
+      
+      - name: Push changes to fork's main branch
+        if: env.naming_check == 'true'
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+          
+          SAFE_TITLE=$(echo "$ISSUE_TITLE" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g' | sed -E 's/^-+|-+$//g')
+          
+          NEW_BRANCH="issue-${SAFE_TITLE:0:30}-${ISSUE_NUMBER}"
+
+          echo "Creating new branch: $NEW_BRANCH"
+          git checkout -b "$NEW_BRANCH"
+          git push https://${{env.user_name}}:${{env.user_token}}@github.com/${{env.user_name}}/infra_test.git "$NEW_BRANCH"
+          echo "Pushed to new branch: $NEW_BRANCH"
