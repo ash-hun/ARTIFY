@@ -53,12 +53,12 @@ jobs:
       - name: Add fork remote with PAT
         if: env.naming_check == 'true'
         run: |
-          git remote add local https://x-access-token:${{env.user_token}}@github.com/${{env.user_name}}/infra_test.git
+          git remote add local https://x-access-token:${{env.user_token}}@github.com/${{env.user_name}}/ARTIFY.git
       
       - name: Pull latest changes from origin
         if: env.naming_check == 'true'
         run: |
-          git pull --rebase https://${{env.user_token}}@github.com/${{env.user_name}}/infra_test.git main
+          git pull --rebase https://${{env.user_token}}@github.com/${{env.user_name}}/ARTIFY.git main
       
       - name: Push changes to fork's main branch
         if: env.naming_check == 'true'
@@ -72,5 +72,5 @@ jobs:
 
           echo "Creating new branch: $NEW_BRANCH"
           git checkout -b "$NEW_BRANCH"
-          git push https://${{env.user_name}}:${{env.user_token}}@github.com/${{env.user_name}}/infra_test.git "$NEW_BRANCH"
+          git push https://${{env.user_name}}:${{env.user_token}}@github.com/${{env.user_name}}/ARTIFY.git "$NEW_BRANCH"
           echo "Pushed to new branch: $NEW_BRANCH"
