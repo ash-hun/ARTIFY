@@ -14,7 +14,7 @@ jobs:
           ISSUE_TITLE="${{ github.event.issue.title }}"
           echo "Checking issue title: $ISSUE_TITLE"
           
-          if echo "$ISSUE_TITLE" | grep -q "\[BE_p\]"; then
+          if echo "$ISSUE_TITLE" | grep -q "\[BE_P\]"; then
             echo "naming_check=true" >> $GITHUB_ENV
             echo "user_name=ash-hun" >> $GITHUB_ENV
             echo "user_email=jhchoi09@naver.com" >> $GITHUB_ENV
