@@ -1,8 +1,41 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+
 from core.module.translate import Translate
 from utils.datamodel import TranslateInput
 
-app = FastAPI()
+from config import get_settings
+settings = get_settings()
+
+# ================================================
+#                   Swagger 설정
+# ================================================
+SWAGGER_HEADERS = {
+    "title": "ARTIFY",
+    "version": "0.1.0",
+    "description": "## ARTIFY Backend Proxy API Docs",
+}
+
+app = FastAPI(
+    swagger_ui_parameters={
+        "deepLinking": True,
+        "displayRequestDuration": True,
+        "docExpansion": "none",
+        "syntaxHighlight.theme": "tomorrow-night",
+    },
+    **SWAGGER_HEADERS
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
+# ================================================
+#                   API 설정
+# ================================================
 
 @app.get("/translate", tags=['Core'])
 def translate(inputs: TranslateInput):
