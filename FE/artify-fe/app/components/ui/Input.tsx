@@ -1,11 +1,26 @@
 import { InputProps } from "@/app/type";
 import React from "react";
 
-const Input = ({ title, styles, placeholder }: InputProps) => {
+const Input = ({
+  title,
+  value,
+  type,
+  styles,
+  placeholder,
+  onChange,
+}: InputProps) => {
   return (
-    <div>
+    <div className="w-full">
       <label className="text-gray-600">{title}</label>
-      <input className={styles} placeholder={placeholder} />
+      <input
+        type={
+          type !== "password" && type !== "passwordCheck" ? "text" : "password"
+        }
+        className={styles}
+        placeholder={placeholder}
+        onChange={(e) => onChange(type, e)}
+        value={value}
+      />
     </div>
   );
 };
