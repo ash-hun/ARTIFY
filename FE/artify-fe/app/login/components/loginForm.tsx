@@ -2,6 +2,7 @@
 import Button from "@/app/components/ui/button";
 import Input from "@/app/components/ui/Input";
 import React, { useState } from "react";
+import axios from "axios";
 import { defaultDataType } from "../type";
 import { useRouter } from "next/navigation";
 
@@ -13,25 +14,38 @@ const LoginForm = ({
   setRequestData: React.Dispatch<React.SetStateAction<defaultDataType>>;
 }) => {
   const [formItem, setFormItem] = useState(requestData);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  const onJoin = () => {
-    setRequestData((prev: defaultDataType) => ({ ...prev, name: "join" }));
-  };
-
-  const onChange = (type: string, e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormItem((prev: defaultDataType) => ({
+  const onChange = (name: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormItem((prev) => ({
       ...prev,
-      [type]: e.target.value,
+      [name]: e.target.value,
     }));
   };
 
-  const onSubmit = () => {
-    setRequestData(formItem);
+  const onSubmit = async () => {
+    try {
+      const response = await axios.post("~/api/auth/login", {
+        email: formItem.email,
+        password: formItem.password,
+      });
+
+      if (response.status === 200) {
+        router.push("/main");
+      }
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        setError(error.response?.msg);
+      } else if (error.response?.status === 500) {
+        setError(error.response?.msg);
+      } else {
+        setError("에러 발생");
+      }
+    }
   };
 
-  const onTest = () => {
-    console.log("Navigating to /login/membership");
+  const onJoin = () => {
     router.push("/login/membership");
   };
 
@@ -50,10 +64,11 @@ const LoginForm = ({
             placeholder={"Your Email"}
             onChange={onChange}
           />
+
           <Input
             title={"Password"}
-            value={formItem.password}
             type="password"
+            value={formItem.password}
             styles={"w-full mb-4 p-2 border border-gray-300 rounded"}
             placeholder={"Your Password"}
             onChange={onChange}
@@ -70,14 +85,13 @@ const LoginForm = ({
             styles={
               "w-full py-1 rounded-lg text-gray-800 mt-4 cursor-pointer border border-gray-800 hover:bg-gray-50"
             }
-            onClick={onTest}
+            onClick={onJoin}
           />
-
-          <button onClick={onJoin}>
-            <p className="mt-4 border-b border-black inline-block cursor-pointer hover:font-bold">
-              Forgot password?
-            </p>
-          </button>
+          {error && (
+            <div className="mt-4 flex justify-center">
+              <p className="text-red-400">{error}</p>
+            </div>
+          )}
         </div>
         <div className="mt-8 w-[85%]">
           <button className="w-full py-1 rounded-lg mt-4 border border-black h-[3rem] cursor-pointer hover:bg-gray-50">
