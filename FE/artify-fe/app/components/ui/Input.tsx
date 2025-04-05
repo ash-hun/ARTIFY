@@ -1,5 +1,5 @@
-import { InputProps } from "@/app/type";
 import React from "react";
+import { InputProps } from "@/app/type";
 
 const Input = ({
   title,
@@ -10,12 +10,10 @@ const Input = ({
   onChange,
 }: InputProps) => {
   return (
-    <div className="w-full">
-      <label className="text-gray-600">{title}</label>
+    <div className="w-full flex flex-col">
+      <label className="text-gray-600 mb-2">{title}</label>
       <input
-        type={
-          type !== "password" && type !== "passwordCheck" ? "text" : "password"
-        }
+        type={type}
         className={styles}
         placeholder={placeholder}
         onChange={(e) => onChange(type, e)}
