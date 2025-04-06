@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
@@ -23,13 +23,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/auth/signup")
+    @PostMapping("/api/auth/signup")
     public ResponseEntity<Map<String, Object>> signUp(@Valid @RequestBody CreateUserDTO request) {
-
+        System.out.println(request);
         User newUser = userService.createUser(request);
 
         Map<String, Object> result = new HashMap<>();
-        result.put("statue", 200);
+        result.put("status", 200);
         result.put("msg", "성공적으로 가입되었습니다.");
 
         return ResponseEntity.ok().body(result);

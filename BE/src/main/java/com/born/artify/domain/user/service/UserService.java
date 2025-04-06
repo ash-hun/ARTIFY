@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
@@ -32,6 +32,6 @@ public class UserService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword())); // 비밀번호 암호화
 
-        return userRepository.save(user);
+        return userRepository.save(user); // 저장
     }
 }
