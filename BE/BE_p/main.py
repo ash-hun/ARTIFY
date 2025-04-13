@@ -1,9 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from core.module.translate import Translate
 from utils.datamodel import TranslateInput
-
+from core.module.translate import Translate
 from config import get_settings
 settings = get_settings()
 
@@ -41,8 +40,8 @@ app.add_middleware(
 def translate(inputs: TranslateInput):
     ''' Translation API 입니다.'''
     try:
-        translate_module = Translate()
-        result = translate_module.run(inputs.params['text'], inputs.params['language'])
+        translate_module = Translate(config=inputs.params)
+        result = translate_module.run(inputs.params['input_text'], inputs.params['language'], inputs.params['temperature'])
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
