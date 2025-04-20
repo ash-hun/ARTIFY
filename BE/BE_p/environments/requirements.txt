@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pytest
+locust
+pytest-cov
+pytest-xdist
+langgraph
+openai
+requests
+python-dotenv
+instructor
+kiwipiepy==0.19.0

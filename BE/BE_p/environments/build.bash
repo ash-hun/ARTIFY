@@ -1,0 +1,1 @@
+docker build -t artify_be_p:version_1 .
