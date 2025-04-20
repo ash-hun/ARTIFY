@@ -32,8 +32,7 @@ public class AuthService {
         String accessToken = jwtProvider.createAccessToken(user.getEmail());
         String refreshToken = jwtProvider.createRefreshToken(user.getEmail());
 
-        // 필요하다면 refreshToken DB 저장도 여기서 처리
-
         return new TokenResDTO(accessToken, refreshToken);
     }
+
 }

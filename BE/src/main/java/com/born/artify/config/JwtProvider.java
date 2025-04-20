@@ -52,7 +52,7 @@ public class JwtProvider {
     }
 
     // 토큰 유효성 검증
-    public boolean isValidToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey.getBytes())
@@ -63,4 +63,5 @@ public class JwtProvider {
             return false;
         }
     }
+
 }
