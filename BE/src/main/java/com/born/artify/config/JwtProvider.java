@@ -17,7 +17,7 @@ public class JwtProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final long accessTokenValidity = 1000L * 60 * 15; // 15분
+    private final long accessTokenValidity = 1000L * 60 * 60 * 24; // 1일
     private final long refreshTokenValidity = 1000L * 60 * 60 * 24 * 7; // 7일
 
     // 토큰 생성
@@ -52,7 +52,7 @@ public class JwtProvider {
     }
 
     // 토큰 유효성 검증
-    public boolean isValidToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey.getBytes())
@@ -63,4 +63,5 @@ public class JwtProvider {
             return false;
         }
     }
+
 }
