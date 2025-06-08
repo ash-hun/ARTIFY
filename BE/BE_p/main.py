@@ -1,3 +1,4 @@
+import uuid
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -46,6 +47,14 @@ def translate(inputs: TranslateInput):
             text=config['user_instruction'], 
             language=config['language']['to']
         )
-        return result
+
+        response = {
+            'uuid': str(uuid.uuid4()),
+            'content': {
+                'before': config['user_instruction'],
+                'after': result
+            }
+        }
+        return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
