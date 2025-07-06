@@ -39,19 +39,28 @@ app.add_middleware(
 
 @app.post("/translate", tags=['Core'])
 def translate(inputs: TranslateInput):
-    ''' Translation API 입니다.'''
+    ''' Translation Interface API 입니다.'''
     config = inputs.info
+    template = config['template']
+    template_variable = config['template_variable']
+
+    for key, value in template_variable.items():
+        template = template.replace(f'{{{key}}}', value)
+    
+    user_template = template
+    
     try:
         translate_module = Translate(params=config['params'])
+
         result = translate_module.run(
-            text=config['user_instruction'], 
+            text=user_template, 
             language=config['language']['to']
         )
 
         response = {
             'uuid': str(uuid.uuid4()),
             'content': {
-                'before': config['user_instruction'],
+                'before': user_template,
                 'after': result
             }
         }
